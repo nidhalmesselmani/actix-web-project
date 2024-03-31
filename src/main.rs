@@ -13,13 +13,15 @@ pub struct AppState {
 
 #[actix_web::main]
 async fn main() ->  std::io::Result<()> {
+    // set enviroment variable for RUST_LOG
     if std::env::var_os("RUST_LOG").is_none() {
         std::env::set_var("RUST_LOG", "actix_web=info");
     }
     dotenv().ok();
     env_logger::init();
-
+    // set database_url variable from enviroment variable
     let database_url: String = std::env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+    // create our database pool
     let pool:Pool<Postgres> = match PgPoolOptions::new()
         .max_connections(10)
         .connect(&database_url)
